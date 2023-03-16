@@ -88,13 +88,13 @@ A prebuilt version of this lib can found on dockerhub. To use it for your projec
 
 ```
 [...]
-COPY --from=wiiuenv/libcurlwrapper:[tag] /artifacts $DEVKITPRO
+COPY --from=ghcr.io/wiiu-env/libcurlwrapper:[tag] /artifacts $DEVKITPRO
 [...]
 ```
 
-Replace [tag] with a tag you want to use, a list of tags can be found [here](https://hub.docker.com/r/wiiuenv/libcurlwrapper/tags).
+Replace [tag] with a tag you want to use, a list of tags can be found [here](https://github.com/wiiu-env/libcurlwrapper/pkgs/container/libcurlwrapper/versions).
 It's highly recommended to pin the version to the **latest date** instead of using `latest`.
 
 ## Format the code via docker
 
-`docker run --rm -v ${PWD}:/src wiiuenv/clang-format:13.0.0-2 -r ./source -i`
+`docker run --rm -v ${PWD}:/src ghcr.io/wiiu-env/clang-format:13.0.0-2 -r ./source -i`
