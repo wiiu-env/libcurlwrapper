@@ -27,21 +27,21 @@ extern "C" int curl_global_init() {
         return -1;
     }
 
-    if (OSDynLoad_FindExport(sModuleHandle, FALSE, "setsockopt", (void **) &s_setsockopt) != OS_DYNLOAD_OK) {
+    if (OSDynLoad_FindExport(sModuleHandle, OS_DYNLOAD_EXPORT_FUNC, "setsockopt", (void **) &s_setsockopt) != OS_DYNLOAD_OK) {
         DEBUG_FUNCTION_LINE_ERR("FindExport setsockopt failed.");
         return -2;
     }
 
-    if (OSDynLoad_FindExport(sModuleHandle, true, "cacert_pem", (void **) &s_cacert_pem) != OS_DYNLOAD_OK) {
+    if (OSDynLoad_FindExport(sModuleHandle, OS_DYNLOAD_EXPORT_DATA, "cacert_pem", (void **) &s_cacert_pem) != OS_DYNLOAD_OK) {
         DEBUG_FUNCTION_LINE_WARN("FindExport cacert_pem failed.");
     }
 
-    if (OSDynLoad_FindExport(sModuleHandle, true, "cacert_pem_size", (void **) &s_cacert_pem_size) != OS_DYNLOAD_OK) {
+    if (OSDynLoad_FindExport(sModuleHandle, OS_DYNLOAD_EXPORT_DATA, "cacert_pem_size", (void **) &s_cacert_pem_size) != OS_DYNLOAD_OK) {
         DEBUG_FUNCTION_LINE_WARN("FindExport cacert_pem_size failed.");
     }
 
     char *(*s_curl_version_tmp)() = nullptr;
-    if (OSDynLoad_FindExport(sModuleHandle, false, "curl_version", (void **) &s_curl_version_tmp) == OS_DYNLOAD_OK) {
+    if (OSDynLoad_FindExport(sModuleHandle, OS_DYNLOAD_EXPORT_FUNC, "curl_version", (void **) &s_curl_version_tmp) == OS_DYNLOAD_OK) {
         const char *expectedCURLVersion = "libcurl/7.84.0";
         if (!std::string_view(s_curl_version_tmp()).starts_with(expectedCURLVersion)) {
             DEBUG_FUNCTION_LINE_WARN("Unexpected libcurl version: %s (expected %s)", s_curl_version_tmp(), expectedCURLVersion);
@@ -80,7 +80,7 @@ extern "C" int curlwrapper_setsockopt(int sockfd, int level, int optname, const 
 static void *(*s_curl_easy_setopt)() = nullptr;
 extern "C" int curl_easy_setopt(void *param1, void *param2, void *param3) {
     if (s_curl_easy_setopt == nullptr) {
-        if (sModuleHandle == nullptr || OSDynLoad_FindExport(sModuleHandle, 0, "curl_easy_setopt", (void **) &s_curl_easy_setopt) != OS_DYNLOAD_OK) {
+        if (sModuleHandle == nullptr || OSDynLoad_FindExport(sModuleHandle, OS_DYNLOAD_EXPORT_FUNC, "curl_easy_setopt", (void **) &s_curl_easy_setopt) != OS_DYNLOAD_OK) {
             DEBUG_FUNCTION_LINE_ERR("Failed to find export curl_easy_setopt");
             return CURLE_FAILED_INIT;
         } else {
@@ -100,7 +100,7 @@ extern "C" int curl_easy_setopt(void *param1, void *param2, void *param3) {
 static void *(*s_curl_easy_init)() = nullptr;
 extern "C" void *curl_easy_init() {
     if (s_curl_easy_init == nullptr) {
-        if (sModuleHandle == nullptr || OSDynLoad_FindExport(sModuleHandle, 0, "curl_easy_init", (void **) &s_curl_easy_init) != OS_DYNLOAD_OK) {
+        if (sModuleHandle == nullptr || OSDynLoad_FindExport(sModuleHandle, OS_DYNLOAD_EXPORT_FUNC, "curl_easy_init", (void **) &s_curl_easy_init) != OS_DYNLOAD_OK) {
             DEBUG_FUNCTION_LINE_ERR("Failed to find export curl_easy_init");
             return nullptr;
         } else {

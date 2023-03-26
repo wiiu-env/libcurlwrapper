@@ -7,14 +7,14 @@ struct curl_blob {
                          left zeroes */
 };
 
-#define MAGIC_CHECK_FUNCTION_PTR(function_name, error_return)                                                                                                    \
-    if (WUT_PP_CAT(s_, function_name) == nullptr) {                                                                                                              \
-        if (sModuleHandle == nullptr || OSDynLoad_FindExport(sModuleHandle, FALSE, #function_name, (void **) &WUT_PP_CAT(s_, function_name)) != OS_DYNLOAD_OK) { \
-            DEBUG_FUNCTION_LINE_ERR("FindExport " #function_name " failed.");                                                                                    \
-            return error_return;                                                                                                                                 \
-        } else {                                                                                                                                                 \
-            functionHandles.push_front((uint32_t *) &WUT_PP_CAT(s_, function_name));                                                                             \
-        }                                                                                                                                                        \
+#define MAGIC_CHECK_FUNCTION_PTR(function_name, error_return)                                                                                                                     \
+    if (WUT_PP_CAT(s_, function_name) == nullptr) {                                                                                                                               \
+        if (sModuleHandle == nullptr || OSDynLoad_FindExport(sModuleHandle, OS_DYNLOAD_EXPORT_FUNC, #function_name, (void **) &WUT_PP_CAT(s_, function_name)) != OS_DYNLOAD_OK) { \
+            DEBUG_FUNCTION_LINE_ERR("FindExport " #function_name " failed.");                                                                                                     \
+            return error_return;                                                                                                                                                  \
+        } else {                                                                                                                                                                  \
+            functionHandles.push_front((uint32_t *) &WUT_PP_CAT(s_, function_name));                                                                                              \
+        }                                                                                                                                                                         \
     }
 
 #define MAGIC_FUNCTION_ARG8(res, function_name, error_return, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8)                                             \
