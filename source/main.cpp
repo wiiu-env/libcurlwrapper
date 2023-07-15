@@ -42,9 +42,10 @@ extern "C" int curl_global_init() {
 
     char *(*s_curl_version_tmp)() = nullptr;
     if (OSDynLoad_FindExport(sModuleHandle, OS_DYNLOAD_EXPORT_FUNC, "curl_version", (void **) &s_curl_version_tmp) == OS_DYNLOAD_OK) {
-        const char *expectedCURLVersion = "libcurl/7.84.0";
-        if (!std::string_view(s_curl_version_tmp()).starts_with(expectedCURLVersion)) {
-            DEBUG_FUNCTION_LINE_WARN("Unexpected libcurl version: %s (expected %s)", s_curl_version_tmp(), expectedCURLVersion);
+        const char *expectedCURLVersion1 = "libcurl/7.84.0";
+        const char *expectedCURLVersion2 = "libcurl/8.0.1";
+        if (!std::string_view(s_curl_version_tmp()).starts_with(expectedCURLVersion1) && !std::string_view(s_curl_version_tmp()).starts_with(expectedCURLVersion2)) {
+            DEBUG_FUNCTION_LINE_WARN("Unexpected libcurl version: %s (expected %s)", s_curl_version_tmp(), expectedCURLVersion2);
         }
     } else {
         DEBUG_FUNCTION_LINE_WARN("Failed to check curl_version");
@@ -65,6 +66,7 @@ extern "C" void curl_global_cleanup() {
     for (auto &handle : functionHandles) {
         *handle = 0;
     }
+    functionHandles.clear();
 }
 
 extern "C" int curlwrapper_setsockopt(int sockfd, int level, int optname, const void *optval, socklen_t optlen) {
@@ -218,6 +220,9 @@ MAGIC_FUNCTION(int, curl_mvfprintf, 0, arg1, arg2, arg3);
 MAGIC_FUNCTION(int, curl_mvsprintf, 0, arg1, arg2, arg3);
 MAGIC_FUNCTION(int, curl_mvsnprintf, 0, arg1, arg2, arg3, arg4);
 MAGIC_FUNCTION(char *, curl_mvaprintf, nullptr, arg1, arg2);
+
+MAGIC_FUNCTION(int, curl_ws_recv, CURLM_INTERNAL_ERROR, arg1, arg2, arg3, arg4, arg5);
+MAGIC_FUNCTION(int, curl_ws_send, CURLM_INTERNAL_ERROR, arg1, arg2, arg3, arg4, arg5);
 
 extern "C" int curl_mprintf(const char *format, ...) {
     va_list va;
