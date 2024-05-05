@@ -44,8 +44,9 @@ extern "C" int curl_global_init() {
     if (OSDynLoad_FindExport(sModuleHandle, OS_DYNLOAD_EXPORT_FUNC, "curl_version", (void **) &s_curl_version_tmp) == OS_DYNLOAD_OK) {
         const char *expectedCURLVersion1 = "libcurl/7.84.0";
         const char *expectedCURLVersion2 = "libcurl/8.0.1";
-        if (!std::string_view(s_curl_version_tmp()).starts_with(expectedCURLVersion1) && !std::string_view(s_curl_version_tmp()).starts_with(expectedCURLVersion2)) {
-            DEBUG_FUNCTION_LINE_WARN("Unexpected libcurl version: %s (expected %s)", s_curl_version_tmp(), expectedCURLVersion2);
+        const char *expectedCURLVersion3 = "libcurl/8.7.1";
+        if (!std::string_view(s_curl_version_tmp()).starts_with(expectedCURLVersion1) && !std::string_view(s_curl_version_tmp()).starts_with(expectedCURLVersion2) && !std::string_view(s_curl_version_tmp()).starts_with(expectedCURLVersion3)) {
+            DEBUG_FUNCTION_LINE_WARN("Unexpected libcurl version: %s (expected %s)", s_curl_version_tmp(), expectedCURLVersion3);
         }
     } else {
         DEBUG_FUNCTION_LINE_WARN("Failed to check curl_version");
@@ -179,6 +180,7 @@ MAGIC_FUNCTION(void, curl_free, RETURN_VOID, arg1);
 MAGIC_FUNCTION(int, curl_global_init_mem, CURLE_FAILED_INIT, arg1, arg2, arg3, arg4, arg5, arg6);
 
 MAGIC_FUNCTION(int, curl_global_sslset, CURLSSLSET_NO_BACKENDS, arg1, arg2, arg3);
+MAGIC_FUNCTION(int, curl_global_trace, CURLM_INTERNAL_ERROR, const char *config);
 MAGIC_FUNCTION(void *, curl_slist_append, nullptr, arg1, arg2);
 MAGIC_FUNCTION(void, curl_slist_free_all, RETURN_VOID, arg1);
 MAGIC_FUNCTION(time_t, curl_getdate, 0, arg1, arg2);
@@ -198,6 +200,7 @@ MAGIC_FUNCTION_ARG0(void *, curl_multi_init, nullptr);
 MAGIC_FUNCTION(int, curl_multi_add_handle, CURLM_INTERNAL_ERROR, arg1, arg2);
 MAGIC_FUNCTION(int, curl_multi_remove_handle, CURLM_INTERNAL_ERROR, arg1, arg2);
 MAGIC_FUNCTION(int, curl_multi_fdset, CURLM_INTERNAL_ERROR, arg1, arg2, arg3, arg4, arg5);
+MAGIC_FUNCTION(void **, curl_multi_get_handles, nullptr, CURLM *multi_handle);
 MAGIC_FUNCTION(int, curl_multi_wait, CURLM_INTERNAL_ERROR, arg1, arg2, arg3, arg4, arg5);
 MAGIC_FUNCTION(int, curl_multi_poll, CURLM_INTERNAL_ERROR, arg1, arg2, arg3, arg4, arg5);
 MAGIC_FUNCTION(int, curl_multi_wakeup, CURLM_INTERNAL_ERROR, arg1);
