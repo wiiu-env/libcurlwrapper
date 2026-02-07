@@ -6,7 +6,7 @@ This library loads CURL from an Aroma Module instead of statically linking it to
 
 - Requires the [CURLWrapperModule](https://github.com/wiiu-env/CURLWrapperModule) to be running via [WUMSLoader](https://github.com/wiiu-env/WUMSLoader).
 - Requires [wut](https://github.com/devkitPro/wut) for building.
-- Use with curl 7.84.0 headers, other versions might not be compatible.
+- Use with curl 8.7.1 headers, other versions might not be compatible.
 - See important changes in the Usage section.
 
 Install via `make install`.
